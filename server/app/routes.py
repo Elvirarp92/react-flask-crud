@@ -26,3 +26,13 @@ def new_user():
   company.users.append(user)
   db.session.commit()
   return jsonify({'username': user.username, 'email': user.email}), 201, 
+
+@app.route('/users/<int:id>')
+def get_user(id):
+  user = User.query.get(id)
+  company = Company.query.get(user.company_id)
+
+  if not user:
+    abort(400)
+    
+  return jsonify({'username': user.username, 'email': user.email, 'company': company.name})
