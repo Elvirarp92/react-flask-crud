@@ -12,6 +12,6 @@ from app import routes
 from app import models
 
 if __name__ == '__main__':
-    if not os.path.exists('db.sqlite'):
+    if not os.path.exists('companies.sqlite'):
         db.create_all()
     app.run(debug=True)
