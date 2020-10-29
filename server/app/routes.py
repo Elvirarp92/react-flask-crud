@@ -12,12 +12,12 @@ def new_user():
   if User.query.filter_by(username = username).first() is not None or User.query.filter_by(email = email).first() is not None:
     abort(400) #existing username or email
 
-# hash password and create User instance
+  # hash password and create User instance
   password = digest('sha512', plain_pw, environ.get('SECRET_KEY'))
 
   user = User(username=username, email=email, password=password)
 
-# append user to company, after creating company if it does not exist
+  # append user to company, after creating company if it does not exist
   if Company.query.filter_by(name=company_name).first() is None:
     company = Company(name=company_name)
   else:
@@ -25,4 +25,4 @@ def new_user():
   
   company.users.append(user)
   db.session.commit()
-
+  return jsonify({'username': user.username, 'email': user.email}), 201, 
