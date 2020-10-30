@@ -21,6 +21,7 @@ class User(db.Model):
     password = db.Column(db.String(512), nullable=False)
     company_id = db.Column(db.Integer, db.ForeignKey(
         'companies.id'), nullable=False)
+    company = db.relationship('Company', back_populates='users')
 
 
 class Company(db.Model):
@@ -29,7 +30,7 @@ class Company(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
-    users = db.relationship('User', backref='companies', lazy=True)
+    users = db.relationship('User', back_populates='company')
 
 
 if not path.exists('companies.sqlite3'):
@@ -38,6 +39,9 @@ if not path.exists('companies.sqlite3'):
 
 # ROUTES #
 
+# @app.route('/users', methods=['GET'])
+# def get_users():
+#   User.query.
 
 @app.route('/users', methods=['POST'])
 def new_user():
@@ -73,12 +77,10 @@ def new_user():
 @app.route('/users/<int:id>')
 def get_user(id):
     user = User.query.get(id)
-    company = Company.query.get(user.company_id)
-
     if not user:
         return jsonify({'error': 'id does not match database entry'}), 400
 
-    return jsonify({'username': user.username, 'email': user.email, 'company': company.name})
+    return jsonify({'username': user.username, 'email': user.email, 'company': user.company.name})
 
 
 if __name__ == '__main__':
