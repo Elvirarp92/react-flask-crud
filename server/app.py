@@ -26,10 +26,11 @@ class Company(db.Model):
 
 @app.route('/users', methods=['POST'])
 def new_user():
-  username = request.json.get('username')
-  plain_pw = request.json.get('password')
-  email = request.json.get('email')
-  company_name = request.json.get('company')
+
+  username = request.form.get('username')
+  plain_pw = request.form.get('password')
+  email = request.form.get('email')
+  company_name = request.form.get('company')
 
   if username is None or plain_pw is None or email is None or company_name is None:
     abort(400) #missing arguments
