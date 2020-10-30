@@ -10,65 +10,76 @@ db = SQLAlchemy(app)
 
 # MODELS #
 
+
 class User(db.Model):
 
-  __tablename__ = "users"
+    __tablename__ = "users"
 
-  id = db.Column(db.Integer, primary_key=True)
-  username = db.Column(db.String(32), nullable=False)
-  email = db.Column(db.String(120), unique=True, nullable=False)
-  password = db.Column(db.String(512), nullable=False)
-  company_id = db.Column(db.Integer, db.ForeignKey('companies.id'), nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(32), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(512), nullable=False)
+    company_id = db.Column(db.Integer, db.ForeignKey(
+        'companies.id'), nullable=False)
+
 
 class Company(db.Model):
 
-  __tablename__ = "companies"
+    __tablename__ = "companies"
 
-  id = db.Column(db.Integer, primary_key=True)
-  name = db.Column(db.String(80), nullable=False)
-  users = db.relationship('User', backref='companies', lazy=True)
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+    users = db.relationship('User', backref='companies', lazy=True)
+
+
+if not path.exists('companies.sqlite3'):
+    print('creating tables')
+    db.create_all()
 
 # ROUTES #
+
 
 @app.route('/users', methods=['POST'])
 def new_user():
 
-  username = request.form.get('username')
-  plain_pw = request.form.get('password')
-  email = request.form.get('email')
-  company_name = request.form.get('company')
+    username = request.form.get('username')
+    plain_pw = request.form.get('password')
+    email = request.form.get('email')
+    company_name = request.form.get('company')
 
-  if username is None or plain_pw is None or email is None or company_name is None:
-    abort(400) #missing arguments
-  if User.query.filter_by(username = username).first() is not None or User.query.filter_by(email = email).first() is not None:
-    abort(400) #existing username or email
+    if username is None or plain_pw is None or email is None or company_name is None:
+        abort(400)  # missing arguments
+    if User.query.filter_by(username=username).first() is not None or User.query.filter_by(email=email).first() is not None:
+        abort(400)  # existing username or email
 
-  # hash password and create User instance
-  password = digest('sha512', plain_pw, environ.get('SECRET_KEY'))
+    # hash password and create User instance
+    password = digest(bytes(environ.get('SECRET_KEY'), 'utf-8'),
+                      bytes(plain_pw, 'utf-8'), 'sha512')
 
-  user = User(username=username, email=email, password=password)
+    user = User(username=username, email=email, password=password)
 
-  # append user to company, after creating company if it does not exist
-  if Company.query.filter_by(name=company_name).first() is None:
-    company = Company(name=company_name)
-  else:
-    company = Company.query.filter_by(name=company_name).first()
-  
-  company.users.append(user)
-  db.session.commit()
-  return jsonify({'username': user.username, 'email': user.email}), 201, {'Location': url_for('get_user', id=user.id, _external=True)}
+    # append user to company, after creating company if it does not exist
+    if Company.query.filter_by(name=company_name).first() is None:
+        company = Company(name=company_name)
+    else:
+        company = Company.query.filter_by(name=company_name).first()
+
+    company.users.append(user)
+    db.session.add(company)
+    db.session.commit()
+    return jsonify({'username': user.username, 'email': user.email}), 201, {'Location': url_for('get_user', id=user.id, _external=True)}
+
 
 @app.route('/users/<int:id>')
 def get_user(id):
-  user = User.query.get(id)
-  company = Company.query.get(user.company_id)
+    user = User.query.get(id)
+    company = Company.query.get(user.company_id)
 
-  if not user:
-    abort(400)
+    if not user:
+        abort(400)
 
-  return jsonify({'username': user.username, 'email': user.email, 'company': company.name})
+    return jsonify({'username': user.username, 'email': user.email, 'company': company.name})
+
 
 if __name__ == '__main__':
-    if not path.exists('companies.sqlite'):
-        db.create_all()
     app.run(debug=True)
