@@ -48,9 +48,9 @@ def new_user():
     company_name = request.form.get('company')
 
     if username is None or plain_pw is None or email is None or company_name is None:
-        abort(400)  # missing arguments
+        return jsonify({'error': 'missing fields'}), 400
     if User.query.filter_by(username=username).first() is not None or User.query.filter_by(email=email).first() is not None:
-        abort(400)  # existing username or email
+        return jsonify({'error': 'existing username or email'}), 400
 
     # hash password and create User instance
     password = digest(bytes(environ.get('SECRET_KEY'), 'utf-8'),
@@ -76,7 +76,7 @@ def get_user(id):
     company = Company.query.get(user.company_id)
 
     if not user:
-        abort(400)
+        return jsonify({'error': 'id does not match database entry'}), 400
 
     return jsonify({'username': user.username, 'email': user.email, 'company': company.name})
 
