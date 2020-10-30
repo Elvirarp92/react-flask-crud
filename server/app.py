@@ -39,9 +39,14 @@ if not path.exists('companies.sqlite3'):
 
 # ROUTES #
 
-# @app.route('/users', methods=['GET'])
-# def get_users():
-#   User.query.
+@app.route('/users', methods=['GET'])
+def get_users():
+  users = User.query.all()
+  users_jsonified = []
+  for user in users:
+    users_jsonified.append({'username': user.username, 'email': user.email, 'company': user.company.name})
+
+  return jsonify({'users':users_jsonified})
 
 @app.route('/users', methods=['POST'])
 def new_user():
