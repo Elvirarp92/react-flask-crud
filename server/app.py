@@ -39,14 +39,17 @@ if not path.exists('companies.sqlite3'):
 
 # ROUTES #
 
+
 @app.route('/users', methods=['GET'])
 def get_users():
-  users = User.query.all()
-  users_jsonified = []
-  for user in users:
-    users_jsonified.append({'username': user.username, 'email': user.email, 'company': user.company.name})
+    users = User.query.all()
+    users_jsonified = []
+    for user in users:
+        users_jsonified.append(
+            {'username': user.username, 'email': user.email, 'company': user.company.name})
 
-  return jsonify({'users':users_jsonified})
+    return jsonify({'users': users_jsonified})
+
 
 @app.route('/users', methods=['POST'])
 def new_user():
@@ -79,11 +82,27 @@ def new_user():
     return jsonify({'username': user.username, 'email': user.email}), 201, {'Location': url_for('get_user', id=user.id, _external=True)}
 
 
-@app.route('/users/<int:id>')
+@app.route('/users/<int:id>', methods=['GET'])
 def get_user(id):
     user = User.query.get(id)
     if not user:
         return jsonify({'error': 'id does not match database entry'}), 400
+
+    return jsonify({'username': user.username, 'email': user.email, 'company': user.company.name})
+
+
+@app.route('/users/<int:id>', methods=['PUT'])
+def edit_user(id):
+    new_username = request.form.get('username')
+    new_email = request.form.get('email')
+    user = User.query.get(id)
+    if not user:
+        return jsonify({'error': 'id does not match database entry'}), 400
+
+    user.username = new_username
+    user.email = new_email
+    db.session.commit()
+    #look for a way to update company maybe?
 
     return jsonify({'username': user.username, 'email': user.email, 'company': user.company.name})
 
