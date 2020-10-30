@@ -62,6 +62,6 @@ def get_user(id):
   return jsonify({'username': user.username, 'email': user.email, 'company': company.name})
 
 if __name__ == '__main__':
-    if not os.path.exists('companies.sqlite'):
+    if not path.exists('companies.sqlite'):
         db.create_all()
     app.run(debug=True)
