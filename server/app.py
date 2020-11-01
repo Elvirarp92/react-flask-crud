@@ -112,5 +112,19 @@ def edit_user(id):
     return jsonify({'username': user.username, 'email': user.email, 'company': user.company.name})
 
 
+@app.route('/users/<int:id>', methods=['DELETE'])
+def delete_user(id):
+
+    user = User.query.get(id)
+
+    if not user:
+        return jsonify({'error': 'id does not match database entry'}), 400
+
+    db.session.delete(user)
+    db.session.commit()
+
+    return jsonify({'message': f'user {id} deleted'})
+
+
 if __name__ == '__main__':
     app.run(debug=True)
