@@ -140,9 +140,15 @@ def delete_user(id):
     return jsonify({'message': f'user {id} deleted'})
 
 
-""" @app.route('/companies', methods=['GET'])
+@app.route('/companies', methods=['GET'])
 def get_companies():
- """
+    companies = Company.query.all()
+    companies_jsonified = []
+
+    for company in companies:
+        companies_jsonified.append({'name': company.name})
+
+    return jsonify({'companies': companies_jsonified})
 
 if __name__ == '__main__':
     app.run(debug=True)
