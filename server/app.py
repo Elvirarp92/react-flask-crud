@@ -29,7 +29,7 @@ class Company(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
-    users = db.relationship('User")
+    users = db.relationship('User', backref='company')
 
 
 if not path.exists('companies.sqlite3'):
@@ -94,14 +94,20 @@ def get_user(id):
 def edit_user(id):
     new_username = request.form.get('username')
     new_email = request.form.get('email')
+    new_company = request.form.get('company')
+
     user = User.query.get(id)
+    company = Company.query.filter_by(name=new_company).first()
+
     if not user:
         return jsonify({'error': 'id does not match database entry'}), 400
 
     user.username = new_username
     user.email = new_email
+
+    company.users.append(user)
+    db.session.add(company)
     db.session.commit()
-    #look for a way to update company maybe?
 
     return jsonify({'username': user.username, 'email': user.email, 'company': user.company.name})
 
