@@ -3,10 +3,13 @@ from flask_sqlalchemy import SQLAlchemy
 from config import Config
 from os import environ, path
 from hmac import digest
+from re import compile, fullmatch
 
 app = Flask(__name__)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
+email_regex = compile(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)")
+
 
 # MODELS #
 
@@ -36,6 +39,13 @@ if not path.exists('companies.sqlite3'):
     print('creating tables')
     db.create_all()
 
+# AUXILIARY FUNCTIONS
+
+
+def match_email(str):
+
+    return fullmatch(email_regex, str)
+
 # ROUTES #
 
 
@@ -62,6 +72,8 @@ def new_user():
         return jsonify({'error': 'missing fields'}), 400
     if User.query.filter_by(username=username).first() is not None or User.query.filter_by(email=email).first() is not None:
         return jsonify({'error': 'existing username or email'}), 400
+    if match_email(email) is None:
+        return jsonify({'error': 'invalid email'}), 400
 
     # hash password and create User instance
     password = digest(bytes(environ.get('SECRET_KEY'), 'utf-8'),
@@ -101,6 +113,8 @@ def edit_user(id):
 
     if not user:
         return jsonify({'error': 'id does not match database entry'}), 400
+    if match_email(new_email) is None:
+        return jsonify({'error': 'invalid email'}), 400
 
     user.username = new_username
     user.email = new_email
@@ -125,6 +139,10 @@ def delete_user(id):
 
     return jsonify({'message': f'user {id} deleted'})
 
+
+""" @app.route('/companies', methods=['GET'])
+def get_companies():
+ """
 
 if __name__ == '__main__':
     app.run(debug=True)
