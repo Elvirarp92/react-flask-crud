@@ -1,11 +1,8 @@
 import { Switch, Route } from 'react-router-dom'
+import { HomePage } from './components/pages/'
 
 function App() {
-  return (
-    <main>
-      <h1>hewwo</h1>
-    </main>
-  )
+  return <HomePage></HomePage>
 }
 
 export default App
