@@ -10,6 +10,9 @@ const Button = styled.button`
   margin: 0 1em;
   padding: 0.25em 1em;
   font-family: Poppins, sans-serif;
+  max-height: 2em;
+  text-align: center;
+  line-height: 100%;
 `
 
 const ButtonDelete = styled(Button)`
