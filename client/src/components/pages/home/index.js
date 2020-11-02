@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { GenericTemplate } from './../../templates/'
-import { UserList } from '../../organisms/index'
+import { UserList, Header } from '../../organisms/'
 
 const HomePage = () => {
   const userList = [
@@ -10,10 +10,13 @@ const HomePage = () => {
     { id: 4, username: 'manolo cabesahuevo', company: 'el de atrás ltd.' },
   ]
 
+  const [user, setUser] = useState([]) //where user contains the state and setUser is, well, the setter function
+
   console.log(`homepage userlist: ${userList}`)
 
   return (
     <GenericTemplate>
+      <Header />
       <UserList users={userList} />
     </GenericTemplate>
   )
