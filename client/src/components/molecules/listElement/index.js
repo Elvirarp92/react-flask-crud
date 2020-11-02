@@ -2,11 +2,11 @@ import React from 'react'
 import { Text, TextBold, Button, ButtonDelete } from './../../atoms'
 import { Container } from './styled'
 
-const ListElement = () => {
+const ListElement = ({ name, company }) => {
   return (
     <Container>
-      <TextBold>Nombre</TextBold>
-      <Text>Empresa</Text>
+      <TextBold>{name}</TextBold>
+      <Text>{company}</Text>
       <Container>
         <Button>Detalles</Button>
         <Button>Editar</Button>
