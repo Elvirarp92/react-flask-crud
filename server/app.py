@@ -1,5 +1,6 @@
 from flask import Flask, abort, request, jsonify, g, url_for
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 from config import Config
 from os import environ, path
 from hmac import digest
