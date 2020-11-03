@@ -3,8 +3,6 @@ import { ListElement } from './../../molecules/index'
 
 const UserList = ({ users }) => {
 
-  console.log(users)
-
   return (
     <>
       { users.map((user) => (
