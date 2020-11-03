@@ -57,7 +57,7 @@ def get_users():
     users_jsonified = []
     for user in users:
         users_jsonified.append(
-            {'username': user.username, 'email': user.email, 'company': user.company.name})
+            {'id': user.id, 'username': user.username, 'email': user.email, 'company': user.company.name})
 
     return jsonify({'users': users_jsonified})
 
@@ -101,7 +101,7 @@ def get_user(id):
     if not user:
         return jsonify({'error': 'id does not match database entry'}), 400
 
-    return jsonify({'username': user.username, 'email': user.email, 'company': user.company.name})
+    return jsonify({'id': user.id, 'username': user.username, 'email': user.email, 'company': user.company.name})
 
 
 @app.route('/users/<int:id>', methods=['PUT'])
@@ -125,7 +125,7 @@ def edit_user(id):
     db.session.add(company)
     db.session.commit()
 
-    return jsonify({'username': user.username, 'email': user.email, 'company': user.company.name})
+    return jsonify({'id': user.id, 'username': user.username, 'email': user.email, 'company': user.company.name})
 
 
 @app.route('/users/<int:id>', methods=['DELETE'])
@@ -148,9 +148,10 @@ def get_companies():
     companies_jsonified = []
 
     for company in companies:
-        companies_jsonified.append({'name': company.name})
+        companies_jsonified.append({'id': company.id, 'name': company.name})
 
     return jsonify({'companies': companies_jsonified})
+
 
 if __name__ == '__main__':
     app.run(debug=True)
