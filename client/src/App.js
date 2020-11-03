@@ -13,7 +13,7 @@ function App() {
       .get('http://127.0.0.1:5000/users', { cancelToken: cancelTokenSource.token })
       .then((response) => setUsers(response.data.users))
       .catch((err) => console.log(err))
-  })
+  }, [])
 
   return <HomePage users={users}></HomePage>
 }
