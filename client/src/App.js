@@ -14,7 +14,7 @@ function App() {
       .get('http://127.0.0.1:5000/users', { cancelToken: cancelTokenSource.token })
       .then((response) => setUsers(response.data.users))
       .catch((err) => {
-        if (axios.cancelToken(err)) {
+        if (axios.isCancel(err)) {
           console.log('call cancelled')
         } else {
           setError(err)
