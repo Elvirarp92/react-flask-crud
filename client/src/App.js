@@ -16,8 +16,9 @@ function App() {
       .catch((err) => {
         if (axios.cancelToken(err)) {
           console.log('call cancelled')
+        } else {
+          setError(err)
         }
-        setError(err)
       })
   }, [])
 
