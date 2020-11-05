@@ -65,11 +65,20 @@ def get_users():
 @app.route('/users', methods=['POST'])
 def new_user():
 
-    username = request.form.get('username')
-    plain_pw = request.form.get('password')
-    email = request.form.get('email')
-    company_name = request.form.get('company')
+    if request.is_json:
 
+        req = request.get_json()
+
+        username = req['username']
+        plain_pw = req['password']
+        email = req['email']
+        company_name = req['company']
+
+    elif request.is_form:
+        username = request.form.get('username')
+        plain_pw = request.form.get('password')
+        email = request.form.get('email')
+        company_name = request.form.get('company')
     if username is None or plain_pw is None or email is None or company_name is None:
         return jsonify({'error': 'missing fields'}), 400
     if User.query.filter_by(username=username).first() is not None or User.query.filter_by(email=email).first() is not None:
@@ -106,9 +115,19 @@ def get_user(id):
 
 @app.route('/users/<int:id>', methods=['PATCH'])
 def edit_user(id):
-    new_username = request.form.get('username')
-    new_email = request.form.get('email')
-    new_company = request.form.get('company')
+
+    if request.is_json:
+
+        req = request.get_json()
+
+        new_username = req['username']
+        new_email = req['email']
+        new_company = req['company']
+    
+    elif request.is_form:
+        new_username = request.form.get('username')
+        new_email = request.form.get('email')
+        new_company = request.form.get('company')
 
     user = User.query.get(id)
     company = Company.query.filter_by(name=new_company).first()
