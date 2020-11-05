@@ -104,7 +104,7 @@ def get_user(id):
     return jsonify({'id': user.id, 'username': user.username, 'email': user.email, 'company': user.company.name})
 
 
-@app.route('/users/<int:id>', methods=['PUT'])
+@app.route('/users/<int:id>', methods=['PATCH'])
 def edit_user(id):
     new_username = request.form.get('username')
     new_email = request.form.get('email')
