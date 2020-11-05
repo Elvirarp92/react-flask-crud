@@ -1,4 +1,5 @@
 import React from 'react'
+import axios from 'axios'
 import { useInput } from './../../../hooks/useInput'
 import { Title1, Button, Input, Label } from './../../atoms'
 import { Form, FormWrapper } from './styled'
@@ -11,7 +12,21 @@ const AddUserForm = () => {
 
   function handleSubmit(e) {
     e.preventDefault()
-    console.log(username, email, password, company)
+    createUser()
+  }
+
+  function createUser() {
+    axios
+      .post('http://127.0.0.1:5000/users', {
+        username: username,
+        email: email,
+        password: password,
+        company: company,
+      })
+      .then(() => {})
+      .catch((err) => {
+        console.log(err)
+      })
   }
 
   return (
