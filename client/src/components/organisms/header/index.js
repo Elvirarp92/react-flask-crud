@@ -1,4 +1,5 @@
 import { Title1, Button } from './../../atoms'
+import { AddUserForm } from './../../molecules'
 import { HeaderWrapper } from './styled'
 import { Modal } from './../index'
 import { useModal } from './../../../hooks/useModal'
@@ -13,7 +14,7 @@ const Header = () => {
         <Button onClick={toggle}>Añadir usuario</Button>
       </HeaderWrapper>
       <Modal isShowing={isShowing} hide={toggle}>
-        <p>Hola, soy un modal</p>
+        <AddUserForm />
       </Modal>
     </>
   )
