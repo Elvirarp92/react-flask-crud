@@ -1,4 +1,5 @@
-export { Button, ButtonDelete } from './button/styled'
-export { Text, TextBold } from './text/styled'
-export { Title1 } from './title/styled'
+export { Button, ButtonDelete } from './button'
+export { Text, TextBold } from './text'
+export { Title1 } from './title'
 export { Link } from './link'
+export { Input } from './input'
