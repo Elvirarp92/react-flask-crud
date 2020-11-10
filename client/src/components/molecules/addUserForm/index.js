@@ -4,7 +4,7 @@ import { useInput } from './../../../hooks/useInput'
 import { Title1, Button, Input, Label } from './../../atoms'
 import { Form, FormWrapper } from './styled'
 
-const AddUserForm = () => {
+const AddUserForm = ({ ...props }) => {
   const [username, setUsername] = useInput('')
   const [email, setEmail] = useInput('')
   const [password, setPassword] = useInput('')
@@ -23,7 +23,10 @@ const AddUserForm = () => {
         password: password,
         company: company,
       })
-      .then(() => {})
+      .then(() => {
+        props.refreshUsers()
+        props.hide()
+      })
       .catch((err) => {
         console.log(err)
       })
