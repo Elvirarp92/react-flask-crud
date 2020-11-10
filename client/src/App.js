@@ -9,7 +9,7 @@ function App() {
   const [users, setUsers] = useState([])
   const [err, setError] = useState(undefined)
 
-  useEffect(() => {
+  function refreshUsers() {
     axios
       .get('http://127.0.0.1:5000/users', { cancelToken: cancelTokenSource.token })
       .then((response) => setUsers(response.data.users))
@@ -20,9 +20,11 @@ function App() {
           setError(err)
         }
       })
-  }, [])
+  }
 
-  return <HomePage users={users}></HomePage>
+  useEffect(() => refreshUsers(), [])
+
+  return <HomePage users={users} refreshUsers={refreshUsers}></HomePage>
 }
 
 export default App

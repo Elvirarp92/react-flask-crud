@@ -6,8 +6,8 @@ const HomePage = ({...props}) => {
 
   return (
     <GenericTemplate>
-      <Header />
-      <UserList users={props.users} />
+      <Header refreshUsers={props.refreshUsers}/>
+      <UserList users={props.users} refreshUsers={props.refreshUsers}/>
     </GenericTemplate>
   )
 }
